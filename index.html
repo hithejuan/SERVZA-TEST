@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SERVZA — Los Angeles Catering Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Big+Shoulders+Display:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__mark">SERVZA</div>
+  <a href="apply.html" class="topbar__note" style="text-decoration:none; border-bottom:1px solid var(--rule-strong);">List your kitchen</a>
+</header>
+
+<section class="hero">
+  <div class="hero__visual" id="heroVisual">
+    <div class="medallion" aria-hidden="true">
+      <div class="medallion__rays"></div>
+      <div class="medallion__core">
+        <span class="medallion__no">EST.</span>
+        <span class="medallion__year">2026</span>
+      </div>
+    </div>
+  </div>
+  <h1 class="hero__title">SERVZA</h1>
+  <p class="hero__tagline">Discover. Book. Pay. Done.</p>
+  <p class="hero__sub">Los Angeles's catering directory &mdash; kitchens across the city that cater weddings, offices, and everything between, searchable by cuisine, event date, and budget.</p>
+  <a class="hero__cta" href="#directory">Browse the directory</a>
+</section>
+
+<div class="manifest" id="directory">
+  <form class="manifest__bar" id="filterForm">
+    <div class="manifest__field">
+      <label for="fCategory">Cuisine</label>
+      <select id="fCategory" name="category">
+        <option value="">All cuisines</option>
+      </select>
+    </div>
+    <div class="manifest__field">
+      <label for="fDish">Dish</label>
+      <select id="fDish" name="dish" disabled>
+        <option value="">Choose a cuisine first</option>
+      </select>
+    </div>
+    <div class="manifest__field">
+      <label for="fDate">Event date</label>
+      <input type="date" id="fDate" name="date">
+    </div>
+    <div class="manifest__field">
+      <label for="fPrice">Budget per guest</label>
+      <select id="fPrice" name="price">
+        <option value="">Any budget</option>
+        <option value="low">Under $25</option>
+        <option value="mid">$25&ndash;$40</option>
+        <option value="high">$40 and up</option>
+      </select>
+    </div>
+    <div class="manifest__status">
+      <span id="resultCount" class="manifest__count"></span>
+      <button type="button" id="resetBtn" class="manifest__reset">Reset</button>
+    </div>
+  </form>
+
+  <div class="ledger" id="ledger" role="list"></div>
+
+  <div class="empty" id="emptyState" hidden>
+    <p>No caterers match those filters.</p>
+    <p>Try a different date, or widen the budget.</p>
+    <button type="button" id="emptyReset" class="empty__reset">Clear filters</button>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="foot__mark">SERVZA</div>
+  <p class="foot__line">Fourteen kitchens listed today, from Westminster to Glendale. New vendors added monthly.</p>
+</footer>
+
+<dialog id="bookingModal" class="booking">
+  <button type="button" class="booking__close" id="bookingClose" aria-label="Close booking form">&times;</button>
+
+  <div class="booking__head">
+    <div class="booking__vendor" id="bkVendorName"></div>
+    <ol class="stepper" id="stepper">
+      <li class="stepper__item is-active" data-step="1"><span>1</span>Details</li>
+      <li class="stepper__item" data-step="2"><span>2</span>Dishes</li>
+      <li class="stepper__item" data-step="3"><span>3</span>Service</li>
+      <li class="stepper__item" data-step="4"><span>4</span>Contact</li>
+      <li class="stepper__item" data-step="5"><span>5</span>Review</li>
+    </ol>
+  </div>
+
+  <form id="bookingForm" class="booking__form">
+    <div class="booking__step" data-step="1">
+      <h2 class="booking__title">Event details</h2>
+      <label class="field">
+        <span>How many guests?</span>
+        <input type="number" id="bkGuests" min="1" value="50" required>
+      </label>
+      <label class="field">
+        <span>Event date</span>
+        <input type="date" id="bkDate" required>
+      </label>
+    </div>
+
+    <div class="booking__step" data-step="2" hidden>
+      <h2 class="booking__title">Pick your dishes</h2>
+      <p class="booking__hint">Choose at least one dish from their menu.</p>
+      <div class="booking__dishes" id="bkDishes"></div>
+    </div>
+
+    <div class="booking__step" data-step="3" hidden>
+      <h2 class="booking__title">How should the food arrive?</h2>
+      <label class="option">
+        <input type="radio" name="serviceStyle" value="fullservice" checked>
+        <span class="option__body">
+          <span class="option__title">Full service</span>
+          <span class="option__desc">Vendor staff come to the venue to cook and serve. Adds a $250 staffing fee.</span>
+        </span>
+      </label>
+      <label class="option">
+        <input type="radio" name="serviceStyle" value="dropoff">
+        <span class="option__body">
+          <span class="option__title">Drop-off buffet</span>
+          <span class="option__desc">Food arrives ready to serve, set up buffet-style. No staff on site.</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="booking__step" data-step="4" hidden>
+      <h2 class="booking__title">Your contact info</h2>
+      <label class="field">
+        <span>Full name</span>
+        <input type="text" id="bkName" required>
+      </label>
+      <label class="field">
+        <span>Email</span>
+        <input type="email" id="bkEmail" required>
+      </label>
+      <label class="field">
+        <span>Phone</span>
+        <input type="tel" id="bkPhone" required>
+      </label>
+    </div>
+
+    <div class="booking__step" data-step="5" hidden>
+      <h2 class="booking__title">Review &amp; pay</h2>
+      <dl class="summary" id="bkSummary"></dl>
+      <p class="booking__note">Estimated total &mdash; final price is confirmed directly with the vendor.</p>
+    </div>
+
+    <p class="booking__error" id="bkError" hidden></p>
+
+    <div class="booking__nav">
+      <button type="button" id="bkBack" class="booking__back" hidden>Back</button>
+      <button type="button" id="bkNext" class="booking__next">Continue</button>
+      <button type="submit" id="bkPay" class="booking__pay" hidden>Continue to payment</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>

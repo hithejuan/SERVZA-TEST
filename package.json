@@ -1,0 +1,9 @@
+{
+  "name": "la-catering-directory",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Los Angeles catering vendor directory with booking checkout.",
+  "dependencies": {
+    "stripe": "^17.0.0"
+  }
+}
