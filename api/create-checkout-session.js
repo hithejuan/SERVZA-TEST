@@ -85,8 +85,8 @@ module.exports = async (req, res) => {
         customerName: name,
         customerPhone: phone || "",
       },
-      success_url: `${origin}/index.html?booking=success`,
-      cancel_url: `${origin}/index.html?booking=cancelled`,
+      success_url: `${origin}/index.html?booking=success&vendor=${encodeURIComponent(vendor.name)}`,
+      cancel_url: `${origin}/index.html?booking=cancelled&vendor=${encodeURIComponent(vendor.name)}`,
     });
 
     res.status(200).json({ url: session.url });

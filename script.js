@@ -1,3 +1,32 @@
+// ===== Booking result notice (after returning from Stripe Checkout) =====
+(function showBookingNotice() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get("booking");
+  if (status !== "success" && status !== "cancelled") return;
+
+  const vendorName = params.get("vendor") || "the vendor";
+  const notice = document.getElementById("bookingNotice");
+  const text = document.getElementById("bookingNoticeText");
+
+  if (status === "success") {
+    notice.classList.add("notice--success");
+    text.textContent = `You're booked! Payment received — ${vendorName} will be in touch to confirm details.`;
+  } else {
+    notice.classList.add("notice--cancelled");
+    text.textContent = `Checkout with ${vendorName} was cancelled — no charge was made.`;
+  }
+
+  notice.hidden = false;
+  document.getElementById("bookingNoticeClose").addEventListener("click", () => {
+    notice.hidden = true;
+  });
+
+  const url = new URL(window.location.href);
+  url.searchParams.delete("booking");
+  url.searchParams.delete("vendor");
+  window.history.replaceState({}, "", url);
+})();
+
 // ===== Category definitions (color + stamp icon) =====
 const CATEGORIES = [
   { value: "mexican",   label: "Mexican & Oaxacan",       color: "#E8792A", icon: "citrus" },

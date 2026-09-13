@@ -63,6 +63,38 @@ a { color: inherit; }
   font-style: italic;
 }
 
+/* ===== Booking result notice ===== */
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule-strong);
+  font-weight: 600;
+  font-size: 15px;
+}
+.notice--success {
+  background: var(--paper-dim);
+  color: var(--grove);
+}
+.notice--cancelled {
+  background: var(--paper-dim);
+  color: var(--ink-soft);
+}
+.notice p { margin: 0; }
+.notice button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 4px;
+  flex-shrink: 0;
+}
+
 /* ===== Hero ===== */
 .hero {
   max-width: 640px;
