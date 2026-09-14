@@ -1,11 +1,8 @@
 const REVIEW_EMAIL = "juanbrito0828@gmail.com";
 
-// Set this after creating a free form-backend account (e.g. https://formspree.io) so
-// photos actually reach you. Until it's set, the form falls back to a text-only email
-// and asks the vendor to attach photos by hand (mailto links can't carry attachments).
-const FORM_ENDPOINT = "";
-
 const MAX_PHOTOS = 6;
+const MAX_DIMENSION = 1600; // resize photos to this before upload — smaller, faster, fits well under Vercel's request size limit
+const JPEG_QUALITY = 0.75;
 
 const categorySelect = document.getElementById("apCategory");
 const otherWrap = document.getElementById("apOtherCategoryWrap");
@@ -88,37 +85,51 @@ function collectFields() {
   };
 }
 
-async function submitWithPhotos(f) {
-  if (!FORM_ENDPOINT) return false;
-
-  const fd = new FormData();
-  fd.append("Business name", f.name);
-  fd.append("Neighborhood", f.neighborhood);
-  fd.append("Cuisine", f.category);
-  fd.append("Dishes", f.dishes);
-  fd.append("Starting price per guest", `$${f.price}`);
-  fd.append("Description", f.desc);
-  fd.append("Available days", f.days.join(", "));
-  fd.append("Already booked / closed dates", f.blackout || "None given");
-  fd.append("Contact name", f.contactName);
-  fd.append("Contact email", f.email);
-  fd.append("Contact phone", f.phone);
-  selectedFiles.forEach(file => fd.append("photos", file));
-
-  try {
-    const res = await fetch(FORM_ENDPOINT, {
-      method: "POST",
-      body: fd,
-      headers: { Accept: "application/json" },
-    });
-    return res.ok;
-  } catch (err) {
-    return false;
-  }
+// Resize + re-encode a photo in the browser before upload: smaller files upload
+// faster and comfortably fit under Vercel's 4.5MB per-request limit.
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error);
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+          const scale = MAX_DIMENSION / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve({
+          filename: file.name.replace(/\.[^.]+$/, "") + ".jpg",
+          dataUrl: canvas.toDataURL("image/jpeg", JPEG_QUALITY),
+        });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-function sendTextOnlyFallback(f) {
-  const lines = [
+async function uploadPhoto(file) {
+  const { filename, dataUrl } = await compressImage(file);
+  const res = await fetch("/api/upload-photo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ filename, dataUrl }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.url) throw new Error(data.error || "Upload failed");
+  return data.url;
+}
+
+function buildFieldLines(f) {
+  return [
     `Business name: ${f.name}`,
     `Neighborhood: ${f.neighborhood}`,
     `Cuisine: ${f.category}`,
@@ -131,14 +142,42 @@ function sendTextOnlyFallback(f) {
     `Contact name: ${f.contactName}`,
     `Contact email: ${f.email}`,
     `Contact phone: ${f.phone}`,
-    ``,
-    selectedFiles.length
-      ? `(Automatic photo upload isn't turned on yet — please attach your ${selectedFiles.length} selected photo(s) to this email before sending!)`
-      : `(No photos were attached.)`,
   ];
-  const subject = encodeURIComponent(`New vendor application: ${f.name}`);
+}
+
+function openMailto(subjectText, lines) {
+  const subject = encodeURIComponent(subjectText);
   const body = encodeURIComponent(lines.join("\n"));
   window.location.href = `mailto:${REVIEW_EMAIL}?subject=${subject}&body=${body}`;
+}
+
+// Try to upload every selected photo to Blob storage and email real links to them.
+// Returns true only if every photo made it up successfully.
+async function submitWithPhotos(f) {
+  try {
+    const urls = [];
+    for (const file of selectedFiles) {
+      urls.push(await uploadPhoto(file));
+    }
+    const lines = buildFieldLines(f).concat(
+      [``, `Photos:`],
+      urls.map((url, i) => `${i + 1}. ${url}`)
+    );
+    openMailto(`New vendor application: ${f.name}`, lines);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+function sendTextOnlyFallback(f) {
+  const lines = buildFieldLines(f).concat([
+    ``,
+    selectedFiles.length
+      ? `(Automatic photo upload didn't go through — please attach your ${selectedFiles.length} selected photo(s) to this email before sending!)`
+      : `(No photos were attached.)`,
+  ]);
+  openMailto(`New vendor application: ${f.name}`, lines);
 }
 
 document.getElementById("applyForm").addEventListener("submit", async (e) => {

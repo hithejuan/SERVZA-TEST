@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Los Angeles catering vendor directory with booking checkout.",
   "dependencies": {
-    "stripe": "^17.0.0"
+    "stripe": "^17.0.0",
+    "@vercel/blob": "^0.27.0"
   }
 }
