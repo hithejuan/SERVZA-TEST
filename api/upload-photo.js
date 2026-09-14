@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
     return;
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  if (!process.env.BLOB_STORE_ID) {
     res.status(500).json({ error: "File storage is not configured on this server yet." });
     return;
   }
