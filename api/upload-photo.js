@@ -8,7 +8,8 @@ module.exports = async (req, res) => {
     return;
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const blobToken = process.env.PUBLICBLOB_READ_WRITE_TOKEN;
+  if (!blobToken) {
     res.status(500).json({ error: "File storage is not configured on this server yet." });
     return;
   }
@@ -38,6 +39,7 @@ module.exports = async (req, res) => {
     const blob = await put(`vendor-applications/${Date.now()}-${safeName}`, buffer, {
       access: "public",
       contentType,
+      token: blobToken,
     });
 
     res.status(200).json({ url: blob.url });
