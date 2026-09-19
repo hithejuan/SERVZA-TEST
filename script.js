@@ -479,7 +479,7 @@ bookingForm.addEventListener("submit", async (e) => {
 
 // ===== Load vendor data, then render =====
 async function init() {
-  const res = await fetch("data/vendors.json");
+  const res = await fetch("data/vendors.json?v=" + Date.now(), { cache: "no-store" });
   VENDORS = await res.json();
   VENDOR_BY_ID = Object.fromEntries(VENDORS.map(v => [v.id, v]));
   render();
