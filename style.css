@@ -395,6 +395,15 @@ a { color: inherit; }
   font-weight: 700;
   font-size: 22px;
   line-height: 1.05;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+.row__name:hover {
+  text-decoration: underline;
 }
 .row__meta {
   font-size: 13px;
@@ -501,6 +510,87 @@ a { color: inherit; }
 .row__book:hover {
   background: transparent;
   color: var(--ink);
+}
+
+/* ===== Vendor detail modal ===== */
+.vendor-detail {
+  border: 1px solid var(--rule-strong);
+  padding: 0;
+  width: min(560px, 92vw);
+  max-height: 88vh;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-body);
+}
+.vendor-detail::backdrop {
+  background: rgba(30, 42, 34, 0.45);
+}
+.vendor-detail__body {
+  padding: 28px;
+  overflow-y: auto;
+  max-height: 88vh;
+}
+.vendor-detail__gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+  margin: 0 0 20px;
+}
+.vendor-detail__gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--rule-strong);
+}
+.vendor-detail__stripe {
+  width: 40px;
+  height: 4px;
+  background: var(--stripe, var(--citrus));
+  margin-bottom: 12px;
+}
+.vendor-detail__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0 0 6px;
+}
+.vendor-detail__desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 16px 0;
+}
+.vendor-detail__section {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  margin: 24px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.vendor-detail__dishes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vendor-detail__dishes li {
+  font-size: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.vendor-detail__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule-strong);
+}
+.vendor-detail__footer .row__book {
+  margin-top: 0;
 }
 
 /* ===== Booking modal ===== */

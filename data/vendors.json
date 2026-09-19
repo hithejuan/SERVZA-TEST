@@ -10,7 +10,7 @@
     "days": ["Fri", "Sat", "Sun"],
     "blackout": ["2026-10-17"],
     "email": "hello@sunsetmoleco.example",
-    "photo": "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789848208082-images.jpg"
+    "photos": ["https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789848208082-images.jpg"]
   },
   {
     "id": "la-costena-marisqueria",

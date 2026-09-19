@@ -211,15 +211,16 @@ function buildRow(vendor) {
     .map(d => `<span class="dish-chip${d === selectedDish ? " is-match" : ""}">${d}</span>`)
     .join("");
 
-  const stampInner = vendor.photo
-    ? `<img src="${vendor.photo}" alt="" class="row__stamp-photo">`
+  const photos = vendor.photos || [];
+  const stampInner = photos.length
+    ? `<img src="${photos[0]}" alt="" class="row__stamp-photo">`
     : iconSvg(cat.icon);
 
   row.innerHTML = `
     <div class="row__stripe"></div>
     <div class="row__stamp">${stampInner}</div>
     <div class="row__id">
-      <div class="row__name">${vendor.name}</div>
+      <button type="button" class="row__name" data-vendor-id="${vendor.id}">${vendor.name}</button>
       <div class="row__meta"><span class="cat">${cat.label}</span> &middot; ${vendor.neighborhood}</div>
     </div>
     <div class="row__desc">
@@ -387,6 +388,48 @@ function renderSummary() {
   `;
 }
 
+const vendorModal = document.getElementById("vendorModal");
+const vendorDetailBody = document.getElementById("vendorDetailBody");
+
+function openVendorDetail(vendorId) {
+  const vendor = VENDOR_BY_ID[vendorId];
+  if (!vendor) return;
+  const cat = CAT_BY_VALUE[vendor.category];
+  const photos = vendor.photos || [];
+
+  const galleryHtml = photos.length
+    ? `<div class="vendor-detail__gallery">${photos.map(url => `<img src="${url}" alt="${vendor.name} food photo">`).join("")}</div>`
+    : "";
+
+  const dishListHtml = vendor.dishes.map(d => `<li>${d}</li>`).join("");
+
+  vendorDetailBody.innerHTML = `
+    ${galleryHtml}
+    <div class="vendor-detail__stripe" style="--stripe:${cat.color}"></div>
+    <h2 class="vendor-detail__name">${vendor.name}</h2>
+    <div class="row__meta"><span class="cat" style="color:${cat.color}">${cat.label}</span> &middot; ${vendor.neighborhood}</div>
+    <p class="vendor-detail__desc">${vendor.desc}</p>
+    <h3 class="vendor-detail__section">Menu</h3>
+    <ul class="vendor-detail__dishes">${dishListHtml}</ul>
+    <div class="vendor-detail__footer">
+      <div class="row__price">from $${vendor.price} / guest</div>
+      <button type="button" class="row__book" data-vendor-id="${vendor.id}">Book this caterer</button>
+    </div>
+  `;
+  vendorModal.showModal();
+}
+
+document.getElementById("vendorModalClose").addEventListener("click", () => vendorModal.close());
+vendorModal.addEventListener("click", (e) => {
+  if (e.target === vendorModal) vendorModal.close();
+});
+vendorDetailBody.addEventListener("click", (e) => {
+  const btn = e.target.closest(".row__book");
+  if (!btn) return;
+  vendorModal.close();
+  openBooking(btn.dataset.vendorId);
+});
+
 function openBooking(vendorId) {
   currentVendor = VENDOR_BY_ID[vendorId];
   if (!currentVendor) return;
@@ -418,9 +461,15 @@ function offerEmailFallback(payload) {
 }
 
 ledger.addEventListener("click", (e) => {
-  const btn = e.target.closest(".row__book");
-  if (!btn) return;
-  openBooking(btn.dataset.vendorId);
+  const nameBtn = e.target.closest(".row__name");
+  if (nameBtn) {
+    openVendorDetail(nameBtn.dataset.vendorId);
+    return;
+  }
+  const bookBtn = e.target.closest(".row__book");
+  if (bookBtn) {
+    openBooking(bookBtn.dataset.vendorId);
+  }
 });
 
 document.getElementById("bookingClose").addEventListener("click", () => bookingModal.close());
