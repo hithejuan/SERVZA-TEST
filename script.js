@@ -531,6 +531,10 @@ async function init() {
   const res = await fetch("data/vendors.json?v=" + Date.now(), { cache: "no-store" });
   VENDORS = await res.json();
   VENDOR_BY_ID = Object.fromEntries(VENDORS.map(v => [v.id, v]));
+  const footCount = document.getElementById("footVendorCount");
+  if (footCount) {
+    footCount.textContent = `${VENDORS.length} kitchen${VENDORS.length === 1 ? "" : "s"}`;
+  }
   render();
 }
 init();

@@ -13,6 +13,22 @@
     "photos": ["https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789848208082-images.jpg"]
   },
   {
+    "id": "juans-mexican-food",
+    "name": "Juan's Mexican Food",
+    "neighborhood": "Koreatown",
+    "category": "mexican",
+    "price": 20,
+    "desc": "Mole and enchiladas, red or green, each plate served with rice, beans, and two tortillas.",
+    "dishes": ["Mole", "Enchiladas"],
+    "days": ["Fri", "Sat", "Sun"],
+    "blackout": [],
+    "email": "juanbrito0828@gmail.com",
+    "photos": [
+      "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789852217527-IMG_9456.jpg",
+      "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789852218801-IMG_9457.jpg"
+    ]
+  },
+  {
     "id": "la-costena-marisqueria",
     "name": "La Costeña Marisquería",
     "neighborhood": "Long Beach",
