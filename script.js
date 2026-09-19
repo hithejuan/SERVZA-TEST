@@ -211,9 +211,13 @@ function buildRow(vendor) {
     .map(d => `<span class="dish-chip${d === selectedDish ? " is-match" : ""}">${d}</span>`)
     .join("");
 
+  const stampInner = vendor.photo
+    ? `<img src="${vendor.photo}" alt="" class="row__stamp-photo">`
+    : iconSvg(cat.icon);
+
   row.innerHTML = `
     <div class="row__stripe"></div>
-    <div class="row__stamp">${iconSvg(cat.icon)}</div>
+    <div class="row__stamp">${stampInner}</div>
     <div class="row__id">
       <div class="row__name">${vendor.name}</div>
       <div class="row__meta"><span class="cat">${cat.label}</span> &middot; ${vendor.neighborhood}</div>
