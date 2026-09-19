@@ -213,7 +213,7 @@ function buildRow(vendor) {
 
   const photos = vendor.photos || [];
   const stampInner = photos.length
-    ? `<img src="${photos[0]}" alt="" class="row__stamp-photo">`
+    ? `<img src="${photos[0].url}" alt="" class="row__stamp-photo">`
     : iconSvg(cat.icon);
 
   row.innerHTML = `
@@ -398,7 +398,12 @@ function openVendorDetail(vendorId) {
   const photos = vendor.photos || [];
 
   const galleryHtml = photos.length
-    ? `<div class="vendor-detail__gallery">${photos.map(url => `<img src="${url}" alt="${vendor.name} food photo">`).join("")}</div>`
+    ? `<div class="vendor-detail__gallery">${photos.map(p => `
+        <figure class="vendor-detail__photo">
+          <img src="${p.url}" alt="${p.caption || vendor.name + " food photo"}">
+          ${p.caption ? `<figcaption>${p.caption}</figcaption>` : ""}
+        </figure>
+      `).join("")}</div>`
     : "";
 
   const dishListHtml = vendor.dishes.map(d => `<li>${d}</li>`).join("");

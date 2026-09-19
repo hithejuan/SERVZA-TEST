@@ -10,7 +10,9 @@
     "days": ["Fri", "Sat", "Sun"],
     "blackout": ["2026-10-17"],
     "email": "hello@sunsetmoleco.example",
-    "photos": ["https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789848208082-images.jpg"]
+    "photos": [
+      { "url": "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789848208082-images.jpg", "caption": "Mole with rice and warm tortillas" }
+    ]
   },
   {
     "id": "juans-mexican-food",
@@ -24,8 +26,8 @@
     "blackout": [],
     "email": "juanbrito0828@gmail.com",
     "photos": [
-      "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789852217527-IMG_9456.jpg",
-      "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789852218801-IMG_9457.jpg"
+      { "url": "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789852217527-IMG_9456.jpg", "caption": "Chicken mole with Mexican rice" },
+      { "url": "https://f4jxpmhxfffq21ds.public.blob.vercel-storage.com/vendor-applications/1789852218801-IMG_9457.jpg", "caption": "Enchiladas with red sauce and crema" }
     ]
   },
   {

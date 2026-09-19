@@ -19,6 +19,7 @@ const photoInput = document.getElementById("apPhotoInput");
 const photoGrid = document.getElementById("apPhotoGrid");
 const photoLabel = document.getElementById("apPhotoLabel");
 let selectedFiles = [];
+let photoCaptions = [];
 
 function renderPhotos() {
   photoGrid.innerHTML = "";
@@ -33,7 +34,23 @@ function renderPhotos() {
   photoLabel.textContent = selectedFiles.length
     ? `${selectedFiles.length} photo${selectedFiles.length === 1 ? "" : "s"} selected — add more or continue`
     : "Choose photos…";
+  renderCaptionInputs();
   syncInputFiles();
+}
+
+function renderCaptionInputs() {
+  const wrap = document.getElementById("apPhotoCaptions");
+  wrap.innerHTML = "";
+  wrap.hidden = selectedFiles.length === 0;
+  selectedFiles.forEach((file, i) => {
+    const label = document.createElement("label");
+    label.className = "field";
+    label.innerHTML = `
+      <span>What dish is in photo ${i + 1}?</span>
+      <input type="text" data-caption-i="${i}" placeholder="e.g. Chicken mole with rice" value="${photoCaptions[i] || ""}">
+    `;
+    wrap.appendChild(label);
+  });
 }
 
 function syncInputFiles() {
@@ -44,15 +61,26 @@ function syncInputFiles() {
 
 photoInput.addEventListener("change", () => {
   const incoming = Array.from(photoInput.files || []);
-  selectedFiles = [...selectedFiles, ...incoming].slice(0, MAX_PHOTOS);
+  const room = MAX_PHOTOS - selectedFiles.length;
+  const toAdd = incoming.slice(0, Math.max(room, 0));
+  selectedFiles = [...selectedFiles, ...toAdd];
+  photoCaptions = [...photoCaptions, ...toAdd.map(() => "")];
   renderPhotos();
 });
 
 photoGrid.addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-i]");
   if (!btn) return;
-  selectedFiles.splice(Number(btn.dataset.i), 1);
+  const i = Number(btn.dataset.i);
+  selectedFiles.splice(i, 1);
+  photoCaptions.splice(i, 1);
   renderPhotos();
+});
+
+document.getElementById("apPhotoCaptions").addEventListener("input", (e) => {
+  const input = e.target.closest("input[data-caption-i]");
+  if (!input) return;
+  photoCaptions[Number(input.dataset.captionI)] = input.value;
 });
 
 // ===== Submit =====
@@ -161,7 +189,7 @@ async function submitWithPhotos(f) {
     }
     const lines = buildFieldLines(f).concat(
       [``, `Photos:`],
-      urls.map((url, i) => `${i + 1}. ${url}`)
+      urls.map((url, i) => `${i + 1}. ${url} — ${photoCaptions[i] || "no caption given"}`)
     );
     openMailto(`New vendor application: ${f.name}`, lines);
     return true;
